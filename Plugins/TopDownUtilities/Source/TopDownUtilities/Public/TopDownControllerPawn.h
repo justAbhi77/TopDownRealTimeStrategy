@@ -31,6 +31,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionValue& Value);
+
+	void Zoom(const FInputActionValue& Value);
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
@@ -44,6 +46,24 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UFloatingPawnMovement> FloatingPawnMovement;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Move", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Zoom", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ZoomAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Zoom", meta = (AllowPrivateAccess = "true"))
+	float ZoomInterp = 3.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Zoom", meta = (AllowPrivateAccess = "true"))
+	float ZoomMultiplier = 20.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Zoom", meta = (AllowPrivateAccess = "true"))
+	float ZoomMin = 300.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Zoom", meta = (AllowPrivateAccess = "true"))
+	float ZoomMax = 2500.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Zoom", meta = (AllowPrivateAccess = "true"))
+	float ZoomDesired;
 };

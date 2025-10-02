@@ -33,11 +33,16 @@ ATopDownControllerPawn::ATopDownControllerPawn()
 void ATopDownControllerPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ZoomDesired = CameraComponent->OrthoWidth;
 }
 
 void ATopDownControllerPawn::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if(IsValid(Controller) && IsValid(SpringArmComponent))
+		CameraComponent->OrthoWidth = FMath::FInterpTo(CameraComponent->OrthoWidth, ZoomDesired, DeltaTime, ZoomInterp);
 }
 
 void ATopDownControllerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -46,15 +51,17 @@ void ATopDownControllerPawn::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 	if(UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATopDownControllerPawn::Move);
-		FTopDownUtilitiesModule::PrintString("Bound to Move action on Player Pawn");
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
+		// FTopDownUtilitiesModule::PrintString("Bound to Move action on Player Pawn");
+
+		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ThisClass::Zoom);
 	}
 }
 
 void ATopDownControllerPawn::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
-	if(Controller)
+	if(IsValid(Controller))
 	{
 		const FRotator ControlRotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, ControlRotation.Yaw, 0);
@@ -64,5 +71,15 @@ void ATopDownControllerPawn::Move(const FInputActionValue& Value)
 
 		AddMovementInput(RightDirection, MovementVector.X);
 		AddMovementInput(ForwardDirection, MovementVector.Y);
+	}
+}
+
+void ATopDownControllerPawn::Zoom(const FInputActionValue& Value)
+{
+	const float ZoomValue = Value.Get<float>();
+	if(IsValid(Controller) && IsValid(SpringArmComponent))
+	{
+		ZoomDesired = ZoomDesired + ZoomValue * ZoomMultiplier;
+		ZoomDesired = FMath::Clamp(ZoomDesired, ZoomMin, ZoomMax);
 	}
 }
