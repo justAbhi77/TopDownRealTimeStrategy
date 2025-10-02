@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "SelectableInterface.h"
+#include "NavigableInterface.h"
 #include "TopDownBasePawn.generated.h"
 
 class UCapsuleComponent;
@@ -16,7 +17,7 @@ class UStaticMeshComponent;
  *
  */
 UCLASS()
-class ATopDownBasePawn : public APawn, public ISelectableInterface
+class ATopDownBasePawn : public APawn, public ISelectableInterface, public INavigableInterface
 {
 	GENERATED_BODY()
 public:
@@ -27,8 +28,12 @@ public:
 	virtual void Select_Implementation() override;
 	virtual void Deselect_Implementation() override;
 	virtual void ToggleSelection_Implementation(const bool bIsSelected) override;
+	virtual void MoveToLocation_Implementation(const FVector& TargetLocation) override;
 protected:
 	virtual void BeginPlay() override;
+
+	FVector MoveTargetLocation = FVector::ZeroVector;
+	bool bMoving = false;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;

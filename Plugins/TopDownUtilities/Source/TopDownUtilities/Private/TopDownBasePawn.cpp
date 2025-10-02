@@ -55,3 +55,11 @@ void ATopDownBasePawn::ToggleSelection_Implementation(const bool bIsSelected)
 	else
 		Deselect();
 }
+
+void ATopDownBasePawn::MoveToLocation_Implementation(const FVector& TargetLocation)
+{
+	MoveTargetLocation = TargetLocation + FVector(0.f, 0.f, GetDefaultHalfHeight());
+	bMoving = true;
+
+	SetActorLocation(MoveTargetLocation);
+}
