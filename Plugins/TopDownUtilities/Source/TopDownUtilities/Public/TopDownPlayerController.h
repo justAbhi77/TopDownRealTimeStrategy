@@ -17,17 +17,20 @@ UCLASS()
 class TOPDOWNUTILITIES_API ATopDownPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
 public:
 	ATopDownPlayerController();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "TopDownUtils|Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+
 protected:
 	virtual void SetupInputComponent() override;
 
 	void Select(const FInputActionValue& Value);
 
 	void CommandSelectedActor(const FInputActionValue& Value);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Input|Select", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> SelectAction;

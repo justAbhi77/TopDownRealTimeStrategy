@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ATopDownBasePawn::ATopDownBasePawn()
 {
@@ -34,6 +35,8 @@ void ATopDownBasePawn::BeginPlay()
 void ATopDownBasePawn::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	Move();
 }
 
 void ATopDownBasePawn::Select_Implementation()
@@ -60,6 +63,26 @@ void ATopDownBasePawn::MoveToLocation_Implementation(const FVector& TargetLocati
 {
 	MoveTargetLocation = TargetLocation + FVector(0.f, 0.f, GetDefaultHalfHeight());
 	bMoving = true;
+}
 
-	SetActorLocation(MoveTargetLocation);
+void ATopDownBasePawn::Move()
+{
+	if(!bMoving) return;
+
+	FVector MoveDirection = MoveTargetLocation - GetActorLocation();
+	if(MoveDirection.Length() < AcceptanceRadius)
+	{
+		bMoving = false;
+		return;
+	}
+
+	MoveDirection.Normalize(1);
+	AddMovementInput(MoveDirection, 1.f);
+
+	FRotator DesiredRotation = UKismetMathLibrary::MakeRotFromX(MoveDirection);
+	DesiredRotation.Pitch = 0.f;
+	DesiredRotation.Roll = 0.f;
+
+	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->GetDeltaSeconds(), RotationInterpSpeed);
+	SetActorRotation(NewRotation);
 }

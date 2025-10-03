@@ -1,4 +1,4 @@
-// 
+//
 
 #pragma once
 
@@ -27,12 +27,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 protected:
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionValue& Value);
 
 	void Zoom(const FInputActionValue& Value);
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TopDownUtils|Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
